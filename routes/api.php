@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Private Routes
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
+Route::group(['middleware' => ['cors', 'json.response', 'auth:api']], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->name('logout.api');
     Route::delete('/article/{id}', [ArticleController::class, 'destroy'])->name('articles.destory')->middleware('api.superAdmin');
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index')->middleware('api.admin');

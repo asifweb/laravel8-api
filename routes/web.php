@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CallbackController;
+use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*

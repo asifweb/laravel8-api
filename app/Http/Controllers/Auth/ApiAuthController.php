@@ -47,21 +47,24 @@ class ApiAuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                return response([
-                    'user' => $user,
-                    'access_token' => $token
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'Password Mismatch'
-                ], 422);
-            }
-        } else {
+        if (empty($user) or $user == null) {
             return response([
                 'message' => 'User not found'
+            ], 422);
+        }
+        $userTokens = $user->tokens;
+        foreach ($userTokens as $token) {
+            $token->revoke();
+        }
+        if (Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+            return response([
+                'user' => $user,
+                'access_token' => $token
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Password Mismatch'
             ], 422);
         }
     }
